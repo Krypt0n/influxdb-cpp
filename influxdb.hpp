@@ -1,5 +1,5 @@
 /*
-  influxdb-cpp -- 💜 C++ client for InfluxDB.
+  influxdb-cpp -- ?? C++ client for InfluxDB.
 
   Copyright (c) 2010-2018 <http://ez8.co> <orca.zhang@yahoo.com>
   This library is released under the MIT License.
@@ -10,11 +10,15 @@
 #include <cstring>
 #include <cstdio>
 
-#ifdef _WIN32
+#if !defined(Q_OS_UNIX)
+    #ifdef NOMINMAX
+    #undef NOMINMAX
+    #endif
+
     #define NOMINMAX
     #include <windows.h>
     #include <algorithm>
-    #pragma comment(lib, "ws2_32")
+    // #pragma comment(lib, "ws2_32") // removing as it is not available
     typedef struct iovec { void* iov_base; size_t iov_len; } iovec;
     inline __int64 writev(int sock, struct iovec* iov, int cnt) {
         __int64 r = send(sock, (const char*)iov->iov_base, iov->iov_len, 0);
