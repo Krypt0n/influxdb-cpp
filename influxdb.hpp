@@ -18,7 +18,7 @@
     #define NOMINMAX
     #include <windows.h>
     #include <algorithm>
-    // #pragma comment(lib, "ws2_32") // removing as it is not available
+    #pragma comment(lib, "ws2_32")
     typedef struct iovec { void* iov_base; size_t iov_len; } iovec;
     inline __int64 writev(int sock, struct iovec* iov, int cnt) {
         __int64 r = send(sock, (const char*)iov->iov_base, iov->iov_len, 0);
@@ -32,6 +32,13 @@
     #include <netinet/in.h>
     #include <arpa/inet.h>
     #define closesocket close
+    inline size_t writev(int sock, struct iovec* iov, int cnt) {
+        size_t retval=0;
+        for(auto i=0;i<cnt;i++)
+            retval+=write(sock,iov[i].iov_base,iov[i].iov_len);
+
+        return retval;
+    }
 #endif
 
 namespace influxdb_cpp {
